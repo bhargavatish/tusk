@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>waiter task</title>
+</head>
+<body>
+    <form id="formdata">
+        <label for="price">Enter Price</label>
+        <input type="number" name="name" id="price" placeholder="Enter Price"  required>
+        <label for="dish">Enter Dish</label>
+        <input type="text" name="dish" id="dish" placeholder="Enter Dish" required>
+        <label for="table">Select Table</label>
+        <select name="table" id="table">
+            <option value="Table-1">Table-1</option>
+            <option value="Table-2">Table-2</option>
+            <option value="Table-3">Table-3</option>
+        </select>
+        <input type="submit" value="Add to Bill">
+    </form>
+    <div class="order">
+        <h1>Orders</h1>
+        <div>
+            <h2>Table-1</h2>
+            <ul id="Table-1"></ul>
+        </div>
+        <div>
+            <h2>Table-2</h2>
+            <ul id="Table-2"></ul>
+        </div>
+        <div>
+            <h2>Table-3</h2>
+            <ul id="Table-3"></ul>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', () =>{
+                axios.get("https://crudcrud.com/api/6d90ead03a5a48ebbfa29294c2b51f2f/mydata")
+                .then((res) => {
+
+                    function displayContent () {
+                    for(let i=0; i<res.data.length ; i++){
+                       let create=document.createElement('li')
+                       let textNode=document.createTextNode(`${res.data[i].price}_${res.data[i].dish}_${res.data[i].table}`)
+                       let btn=document.createElement('input');
+                       btn.type='button'; btn.value='Delete';
+                       create.appendChild(textNode);
+                       create.appendChild(btn)
+
+                       btn.onclick=function(e){
+                        document.getElementById(`${res.data[i].table}`).removeChild(e.target.parentElement);
+                            axios.delete(`https://crudcrud.com/api/6d90ead03a5a48ebbfa29294c2b51f2f/mydata/${res.data[i]._id}`)
+                            .then(res => console.log(res.data))
+                            .catch(err => console.log(err));
+                       }
+                       document.getElementById(`${res.data[i].table}`).appendChild(create);
+            
+                    }}
+                    displayContent()
+                })
+                .catch((err) => console.log(err));
+                
+        })
+
+        var form=document.querySelector('#formdata');
+        form.addEventListener('submit',order);
+
+        function order(e){
+            e.preventDefault();
+            var li = document.createElement('li');
+
+            let priceText=document.querySelector('#formdata #price').value;
+            var price=document.createTextNode(priceText);
+            li.appendChild(price);
+
+            var dishText=document.querySelector('#formdata #dish').value;
+            var dish=document.createTextNode(dishText);
+            li.appendChild(dish);
+
+            var tableText=document.querySelector('#formdata #table').value;
+            var table=document.createTextNode(tableText);
+            li.appendChild(table);
+
+            var del = document.createElement('input');
+            del.type='button';  del.value='Delete';
+            li.appendChild(del)
+            del.onclick=function(e){
+                document.querySelector(`#${tableText}`).removeChild(e.target.parentElement);
+                axios.get('https://crudcrud.com/api/6d90ead03a5a48ebbfa29294c2b51f2f/mydata')
+                .then((res) =>{
+                    for(let i=0; i<res.data.length; i++){
+                        if(res.data[i].dish == dishText)
+                        {
+                            axios.delete(`https://crudcrud.com/api/6d90ead03a5a48ebbfa29294c2b51f2f/mydata/${res.data[i]._id}`)
+                        }
+                    }        
+                })
+            };
+
+            document.querySelector(`#${tableText}`).appendChild(li);
+
+            var Obj={
+                price : priceText,
+                dish: dishText,
+                table: tableText
+            };
+            axios.post("https://crudcrud.com/api/6d90ead03a5a48ebbfa29294c2b51f2f/mydata",Obj)
+                .then((res) => {
+                    console.log(res.data);                       
+                }).catch((err) => console.log(err));
+        }      
+    </script>
+</body>
+</html>
