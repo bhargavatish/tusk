@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GetPost</title>
+    
+</head>
+
+<body>
+    <form id="formdata">
+        <input type="text" name="name" id="values" placeholder="Enter name..."  required>
+        <input type="email" name="mainid" id="mail_id" placeholder="example@email.com" required>
+        <input type="number" name="phone" id="phone_id"  value="9876543210" required>
+        <input type="submit" value="submit">
+    </form>
+    <div>
+
+        <ul id="list"></ul>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <script>
+        
+
+        document.addEventListener('DOMContentLoaded', () =>{
+                axios.get("https://crudcrud.com/api/f768dcba963448679bba08bf352c9ad1/mydata")
+                .then((res) => {
+
+                    const displayContent = () => {
+                    for(let i=0; i<res.data.length ; i++){
+                       let create=document.createElement('li')
+                       let textNode=document.createTextNode(`${res.data[i]._id}_${res.data[i].name}_${res.data[i].phone}`)
+                       create.appendChild(textNode);
+                       document.getElementById('list').appendChild(create);
+            
+                    }}
+                    displayContent()
+                    })
+                .catch((err) => console.log(err));
+                
+                })
+
+        var form=document.querySelector('#formdata');
+        form.addEventListener('submit',present);
+
+        function present(e){
+            e.preventDefault();
+            var li = document.createElement('li');
+
+            let nameText=document.querySelector('#formdata #values').value;
+            var name=document.createTextNode(nameText);
+            li.appendChild(name);
+
+            var emailText=document.querySelector('#formdata #mail_id').value;
+            var email=document.createTextNode(emailText);
+            li.appendChild(email);
+
+            var phoneText=document.querySelector('#formdata #phone_id').value;
+            var phone=document.createTextNode(phoneText);
+            li.appendChild(phone);
+
+            var input = document.createElement('input');
+            input.type='button';  input.value='Delete';
+            // input.onclick=deleteLi;
+            li.appendChild(input)
+
+            document.querySelector('#list').appendChild(li);
+            
+            
+            
+            input.onclick=function(e){
+                var button= e.target;
+                document.querySelector('#list').removeChild(button.parentElement);
+                localStorage.removeItem(nameText);
+            };
+            
+            var edit=document.createElement('input'); edit.type='button';
+            edit.value='Edit';   
+            li.appendChild(edit);
+
+            edit.onclick=function(e){
+                localStorage.removeItem(nameText);
+                document.getElementById('list').removeChild(e.target.parentElement);
+                document.querySelector('#values').value=nameText;
+                document.querySelector('#mail_ed').value=emailText;
+                document.querySelector('#phone_id').value=phoneText;
+                
+            };
+
+            var Obj={
+                name : nameText,
+                email: emailText,
+                phone: phoneText
+            };
+        }            
+    </script>
+
+</body>
+</html>
