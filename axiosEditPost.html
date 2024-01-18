@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>put myObj Local</title>
+    
+</head>
+
+<body>
+    <form id="formdata">
+        <input type="text" name="name" id="values" placeholder="Enter name..."  required>
+        <input type="email" name="mainid" id="mail_id" placeholder="example@email.com" required>
+        <input type="number" name="phone" id="phone_id"  placeholder="9876543210" required>
+        <input type="submit" id="subbtn" value="submit">
+    </form>
+    <div>
+
+        <ul id="list"></ul>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <script>
+        
+       // To display on screen
+       let uniqueId,flag=0;
+        document.addEventListener('DOMContentLoaded', () =>{
+                axios.get("https://crudcrud.com/api/f768dcba963448679bba08bf352c9ad1/mydata")
+                .then((res) => {
+
+                    const displayContent = () => {
+                    for(let i=0; i<res.data.length ; i++){
+                       let create=document.createElement('li')
+                       let textNode=document.createTextNode(`${res.data[i]._id}${res.data[i].name}${res.data[i].email}${res.data[i].phone}`)
+                       create.appendChild(textNode);
+                       let del=document.createElement('button');
+                       del.appendChild(document.createTextNode('Delete'));
+                       let edit=document.createElement('button');
+                       edit.appendChild(document.createTextNode('Edit'));
+                       create.appendChild(del);                create.appendChild(edit);
+                       document.getElementById('list').appendChild(create);
+                       edit.onclick=function (e){
+                            document.getElementById('values').value=res.data[i].name;
+                            document.getElementById('mail_id').value=res.data[i].email;
+                            document.getElementById('phone_id').value=res.data[i].phone;
+                            uniqueId=res.data[i]._id;
+                        };
+                    }}
+                    displayContent()
+                    }).catch((err) => console.log(err));
+        })
+
+        var form=document.querySelector('#formdata');
+        form.addEventListener('submit',present);
+
+        function present(e){
+            e.preventDefault();
+            var li = document.createElement('li');
+
+            let nameText=document.querySelector('#formdata #values').value;
+            var name=document.createTextNode(nameText);
+            li.appendChild(name);
+
+
+            var emailText=document.querySelector('#formdata #mail_id').value;
+            var email=document.createTextNode(emailText);
+            li.appendChild(email);
+
+            
+            var phoneText=document.querySelector('#formdata #phone_id').value;
+            var phone=document.createTextNode(phoneText);
+            li.appendChild(phone);
+
+            
+            
+            let Obj={
+                name : nameText,
+                email: emailText,
+                phone: phoneText
+            };
+            if(uniqueId != undefined){
+            axios.put(`https://crudcrud.com/api/f768dcba963448679bba08bf352c9ad1/mydata/${uniqueId}`,Obj);        
+            uniqueId=undefined;
+            alert('Submitted !')
+            }
+            else{
+                document.querySelector('#list').appendChild(li);
+                axios.post(`https://crudcrud.com/api/f768dcba963448679bba08bf352c9ad1/mydata/`,Obj);
+            }
+        }
+        
+    </script>
+
+</body>
+</html>
