@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>General Store</title>
+</head>
+
+<body>
+    <form id="formdata">
+        <label for="name">Item Name</label>
+        <input type="text" name="name" id="name" placeholder="Enter name" required>
+        <label for="desc">Enter Description</label>
+        <input type="text" name="desc" id="desc" placeholder="Enter Desciption" required>
+        <label for="price">Price</label>
+        <input type="number" name="price" id="price" placeholder="Enter Price" required>
+        <label for="quan">Quantity</label>
+        <input type="number" name="price" id="quan" placeholder="Enter Quantity" required>
+        <input type="submit" value="Add Item">
+    </form>
+    <ul id="items"></ul>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <script>
+        let uniqueId;
+        document.addEventListener('DOMContentLoaded', (e) => {
+            axios.get('https://crudcrud.com/api/c8385068317945dc9bbac2cdc9746241/mydata')
+                .then((res) => {
+                    function displayContent(e) {
+                        for (let i = 0; i < res.data.length; i++) {
+                            let li = document.createElement('li');
+                            var textNode = document.createTextNode(`${res.data[i]._id}__${res.data[i].item}__${res.data[i].desc}__${res.data[i].price}rs__`);
+                            var qText = document.createTextNode(res.data[i].quan);
+                            uniqueId = res.data[i]._id;
+                            let buy1 = document.createElement('input');
+                            buy1.type = 'button'; buy1.value = 'Buy1';
+                            let buy2 = document.createElement('input');
+                            buy2.type = 'button'; buy2.value = 'Buy2';
+                            let buy3 = document.createElement('input');
+                            buy3.value = 'Buy3'; buy3.type = 'button';
+                            li.appendChild(textNode); li.appendChild(qText);
+                            li.appendChild(buy1); li.appendChild(buy2); li.appendChild(buy3);
+                            document.getElementById('items').appendChild(li);
+                            buy1.onclick = function (e) {
+                                let target = e.target.previousSibling;
+                                target.textContent = target.textContent - 1;
+                                console.log(uniqueId)
+                                axios.put(`https://crudcrud.com/api/c8385068317945dc9bbac2cdc9746241/mydata/${uniqueId}`, {
+                                    item: name,
+                                    desc: desc,
+                                    price: price,
+                                    quan: target.textContent - 1
+                                }).then(res => console.log(res)).catch(err => console.log(err));
+
+
+
+                            }
+
+                            buy2.onclick = function (e) {
+                                let target = e.target.previousSibling.previousSibling;
+                                target.textContent = target.textContent - 2;
+
+                                axios.put(`https://crudcrud.com/api/c8385068317945dc9bbac2cdc9746241/mydata/${uniqueId}`, {
+                                    item: name,
+                                    desc: desc,
+                                    price: price,
+                                    quan: target.textContent - 2
+                                }).then(res => console.log(res)).catch(err => console.log(err));
+
+                            }
+
+
+
+                            buy3.onclick = function (e) {
+                                let target = e.target.previousSibling.previousSibling.previousSibling;
+                                target.textContent = target.textContent - 3;
+
+                                axios.put(`https://crudcrud.com/api/c8385068317945dc9bbac2cdc9746241/mydata/${uniqueId}`, {
+                                    item: name,
+                                    desc: desc,
+                                    price: price,
+                                    quan: target.textContent - 3
+                                }).then(res => console.log(res)).catch(err => console.log(err));
+
+                            }
+
+
+
+                            uniqueId = res.data[i]._id;
+                        }
+                    }
+                    displayContent()
+                })
+        })
+        var form = document.getElementById('formdata');
+        form.addEventListener('submit', addItem);
+
+        function addItem(e) {
+            e.preventDefault();
+            let li = document.createElement('li');
+            var name = document.querySelector('#name').value;
+            var nameText = document.createTextNode(name);
+            li.appendChild(nameText);
+            li.appendChild(document.createTextNode('__'))
+
+            var desc = document.querySelector('#desc').value;
+            var descText = document.createTextNode(desc);
+            li.appendChild(descText)
+            li.appendChild(document.createTextNode('__'))
+
+            var price = document.querySelector('#price').value;
+            var priceText = document.createTextNode(price);
+            li.appendChild(priceText)
+            li.appendChild(document.createTextNode('rs__'))
+
+            var quan = document.querySelector('#quan').value;
+            var quanText = document.createTextNode(quan);
+            li.appendChild(quanText);
+
+
+            var quanInput1 = document.createElement('input');
+            quanInput1.type = 'button'; quanInput1.value = 'Buy1';
+            quanInput1.id = 'Buy1';
+            quanInput1.onclick = function (e) {
+                let target = e.target.previousSibling;
+                target.textContent = target.textContent - 1;
+
+                axios.put(`https://crudcrud.com/api/c8385068317945dc9bbac2cdc9746241/mydata/${uniqueId}`, {
+                    item: name,
+                    desc: desc,
+                    price: price,
+                    quan: target.textContent
+                }).then(res => console.log(res)).catch(err => console.log(err));
+
+            }
+            li.appendChild(quanInput1);
+
+            var quanInput2 = document.createElement('input');
+            quanInput2.type = 'button'; quanInput2.value = 'Buy2';
+            quanInput2.id = 'Buy2';
+            quanInput2.onclick = function (e) {
+                let target = e.target.previousSibling.previousSibling;
+                target.textContent = target.textContent - 2;
+
+
+                axios.put(`https://crudcrud.com/api/c8385068317945dc9bbac2cdc9746241/mydata/${uniqueId}`, {
+                    item: name,
+                    desc: desc,
+                    price: price,
+                    quan: target.textContent
+                }).then(res => console.log(res)).catch(err => console.log(err));
+
+            }
+            li.appendChild(quanInput2);
+            var quanInput3 = document.createElement('input');
+            quanInput3.type = 'button'; quanInput3.value = 'Buy3';
+            quanInput3.id = 'Buy3';
+            quanInput3.onclick = function (e) {
+
+                let target = e.target.previousSibling.previousSibling.previousSibling;
+                target.textContent = target.textContent - 3;
+
+                axios.put(`https://crudcrud.com/api/c8385068317945dc9bbac2cdc9746241/mydata/${uniqueId}`, {
+                    item: name,
+                    desc: desc,
+                    price: price,
+                    quan: target.textContent
+                }).then(res => console.log(res)).catch(err => console.log(err));
+
+            }
+            li.appendChild(quanInput3);
+
+            document.querySelector('#items').appendChild(li);
+            let obj = {
+                item: name,
+                desc: desc,
+                price: price,
+                quan: quan
+            };
+            axios.post('https://crudcrud.com/api/c8385068317945dc9bbac2cdc9746241/mydata', obj)
+                .then(res => console.log(res))
+                .catch(err => console.log(err))
+
+
+        }
+    </script>
+</body>
+
+</html>
