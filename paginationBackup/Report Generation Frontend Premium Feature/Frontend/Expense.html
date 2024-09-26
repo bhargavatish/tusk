@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExpenseTracker</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+        integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.8/axios.min.js"></script>
+    <style>
+        #buy-premium{
+            font-weight: bold;
+            width:200px;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="">
+        <div class="container col-12">
+            <h1 id="main-title" class="bg-success  p-4 mb-3 text-white title">
+                Expense Tracker
+            </h1>
+        </div>
+    </header>
+    <div class="container card card-body col-11 " id="main-card">
+        <form id="main-form" class="form-inline p-4">
+            <label for="exp" class="mr-1"><h6>Choose-ExpenseAmount</h6></label>
+            <input type="number" id="exp" class=" form-control mr-2 placeholder=" 100 value = "3000">
+
+            <h6 class="mr-1">Choose-Category</h6>
+            <select name="category" id="caty" class="form-control mr-2">
+                <option value="">Select</option>
+                <option value="Movie">Movie</option>
+                <option value="Travel">Travel</option>
+                <option value="Outlet">Outlet</option>
+            </select>
+            
+            <label for="desc"><h6 class="mr-1">Choose-Description</h6></label>
+            <input type="text" id="desc" class="form-control mr-2" placeholder="Type-Description" value = "Miscellaneous">
+
+            <button type="submit" id="add-expense" class="bg-dark text-white btn">Add-Expense</button>
+            
+            
+        </form>
+        <button  id="buy-premium" class="bg-warning  btn ml-2">Buy Premium</button>
+        <p id="is-Premium"></p>
+        <div class="container" >
+            <ul class="list-group p-3" id="main-list">
+            </ul>
+        </div>
+        <h3 id="leaderboard-heading">Leaderboard</h3>
+        
+        <div class="container" >
+            <ul class="list-group p-3" id="leaderboard-list">
+                
+            </ul>
+        </div>
+        <div>
+            <h3 id="downloaded-heading">Downloaded Files</h3>
+            <button id="seefiles" class="btn btn-sm bg-secondary text-white" type="click">See Files</button>
+        </div>
+        <div class="container">
+            <ul class="list-group p-3" id="downloaded-files"></ul>
+        </div>
+        <div id="pagination">
+            
+        </div>
+    </div>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    
+<script src="Expense.js"></script>
+</body>
+</html>
