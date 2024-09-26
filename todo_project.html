@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo Project</title>
+</head>
+<body>
+    <form id="formdata">
+        <label for="todoname">todoName</label>
+        <input type="text" id="todoname" required>
+        <label for="desc">Description</label>
+        <input type="text" id="desc">
+        <button type=" submit" id="post">Add Todo</button>
+    </form>
+    <div id="mainbox">
+        <div id="crossbox">
+            <h1>To-do items</h1>
+            <ul id="cross"></ul>
+        </div>
+        <div id="tickbox">
+            <h1>Done Items</h1>
+            <ul id="tick"></ul>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <script>
+
+        let uniqueId,flag=0;
+        document.addEventListener('DOMContentLoaded', () =>{
+                axios.get("https://crudcrud.com/api/a2466ffd138a461d8b903d026f14ed16/mydata")
+                .then((res) => {
+
+                const displayContent = () => {
+                for(let i=0; i<res.data.length ; i++){
+                    let create=document.createElement('li')
+                    let textNode=document.createTextNode(`${res.data[i]._id}_${res.data[i].name}_${res.data[i].desc}_${res.data[i].isdone}`)
+                    create.appendChild(textNode);
+                   
+
+                    if(res.data[i].isdone=='false'){
+                        document.querySelector('#cross').appendChild(create);
+                    }
+                    else{
+                        document.querySelector('#tick').appendChild(create);
+                    }
+                    uniqueId=res.data[i]._id;
+                
+                }}
+                    displayContent()
+                }).catch((err) => console.log(err));
+        })
+
+
+        var form=document.querySelector('#formdata');
+        form.addEventListener('submit',addTodo);
+        function addTodo(e){
+            e.preventDefault();
+            var li=document.createElement('li');
+            var todoname=document.querySelector('#todoname').value;
+            var nameText=document.createTextNode(todoname);
+            li.appendChild(nameText);
+            var desc=document.querySelector('#desc').value;
+            var descText=document.createTextNode(desc);
+            li.appendChild(descText);
+            var done=document.createElement('input'); done.type='button';
+            done.value='Add to done';  li.appendChild(done);
+            var btn=document.createElement('input'); btn.type='button';
+            btn.value='remove item';  li.appendChild(btn);
+            btn.onclick=function remove (e){
+                var remove=e.target.parentElement;
+                document.querySelector('#cross').removeChild(remove)
+            }
+            done.onclick=function(e){
+                console.log(uniqueId)
+                li.remove();
+                li.removeChild(btn);    li.removeChild(done);
+                document.querySelector('#tick').appendChild(li);
+                
+                
+            }
+            done.addEventListener('click',function(){
+                axios.put(`https://crudcrud.com/api/a2466ffd138a461d8b903d026f14ed16/mydata/${uniqueId}`,{
+                    name: todoname,
+                    desc: desc,
+                    isdone:'true'
+                }).then(res=>console.log(uniqueId)).catch(err=> console.log(err));
+            })
+            
+            axios.post('https://crudcrud.com/api/a2466ffd138a461d8b903d026f14ed16/mydata',{
+            name: todoname,
+            desc: desc,
+            isdone: 'false'
+            })
+          
+            document.querySelector('#cross').appendChild(li);
+          
+        }
+    </script>
+</body>
+</html>
